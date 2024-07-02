@@ -113,19 +113,16 @@ export default {
       var htmlnamespace = Object.keys(data["@context"]).find((k) =>
         data["@context"][k].includes("html")
       );
-      var dcnamespace = Object.keys(data["@context"]).find((k) =>
-        data["@context"][k].includes("dc/elements")
-      );
 
       if (data && data["member"]) {
         for (var these of data["member"]) {
           if (these["@id"].includes("PREV") || these["@id"].includes("NEXT")) {
             continue;
           }
-          var title = these["dts:extensions"][htmlnamespace + ":h1"];
-          var author = these["dts:extensions"][dcnamespace + ":creator"];
+          var title = these["extensions"][htmlnamespace + ":h1"];
+          var author = these["dublincore"]["creator"];
           try {
-            const page = these["dts:dublincore"]["dct:extend"].toString().split("-")[0];
+            const page = these["extensions"]["dct:extend"].toString().split("-")[0];
             metadata[page] = [these["@id"], author, title];
           } catch {
             metadata[these["@id"].split("_")[2]] = [these["@id"], author, title];

@@ -171,17 +171,15 @@ export default {
     const getMetadata = async (docId) => {
       const listmetadata = await getMetadataFromApi(docId);
 
-      var dcnamespace = Object.keys(listmetadata["@context"]).find((k) =>
-        listmetadata["@context"][k].includes("dc/elements")
-      );
+
       var htmlnamespace = Object.keys(listmetadata["@context"]).find((k) =>
         listmetadata["@context"][k].includes("html")
       );
       console.log(htmlnamespace)
       console.log(listmetadata)
-      metadata.author = listmetadata["dts:extensions"][dcnamespace + ":creator"];
-      if (Array.isArray(listmetadata["dts:download"])){
-        for (let meta of listmetadata["dts:download"]){
+      metadata.author = listmetadata["dublincore"]["creator"];
+      if (Array.isArray(listmetadata["extensions"]["download"])){
+        for (let meta of listmetadata["extensions"]["download"]){
           if (meta.includes(".PDF")){
             metadata.downloadPDF = meta
           }
@@ -190,27 +188,27 @@ export default {
           }
         }
       } else {
-        metadata.downloadXML = listmetadata["dts:download"]
+        metadata.downloadXML = listmetadata["extensions"]["download"]
         metadata.downloadPDF = null
       }
-      metadata.download = listmetadata["dts:download"];
+      metadata.download = listmetadata["download"];
 
 
-      const dublincore = listmetadata["dts:dublincore"];
+      const dublincore = listmetadata["dublincore"];
+      const extensions = listmetadata["extensions"];
       console.log("---------");
       console.log("dublincore", dublincore);
       try {
-        metadata.iiifManifestUrl = dublincore["dct:source"][0]["@id"];
+        metadata.iiifManifestUrl = extensions["dct:source"][0]["@id"];
         layout.imageIsAvailable.value = true;
       } catch {
         metadata.iiifManifestUrl = "";
         layout.imageIsAvailable.value = false;
       }
-      metadata.date = dublincore["dct:date"];
-      metadata.page = dublincore["dct:extend"];
-      metadata.coverage = dublincore["dct:coverage"];
-      metadata.rights = dublincore["dct:rights"][0]["@id"];
-      metadata.title = listmetadata["dts:extensions"][htmlnamespace + ":h1"];
+      metadata.date = dublincore["date"];
+      metadata.page = extensions["dct:extend"];
+      metadata.coverage = extensions["dct:coverage"];
+      metadata.title = listmetadata["extensions"][htmlnamespace + ":h1"];
 
       console.log("metadata.iiifManifestUrl", metadata.iiifManifestUrl);
       console.log("metadata", metadata);
@@ -222,8 +220,8 @@ export default {
         }
 
         // benc & sudoc & thenca
-        if (dublincore["dct:isVersionOf"]) {
-          for (const member of dublincore["dct:isVersionOf"]) {
+        if (extensions["dct:isVersionOf"]) {
+          for (const member of extensions["dct:isVersionOf"]) {
             if (member["@id"]) {
               const source = findSource(member["@id"]);
               if (source) {
@@ -235,8 +233,8 @@ export default {
         }
 
         // creators
-        if (Array.isArray(dublincore["dct:creator"])) {
-          for (let aut of dublincore["dct:creator"]) {
+        if (Array.isArray(extensions["dct:creator"])) {
+          for (let aut of extensions["dct:creator"]) {
             if (aut["@id"]) {
               // find the source name from its extension
               const source = findSource(aut["@id"]);

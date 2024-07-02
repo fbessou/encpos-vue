@@ -149,7 +149,7 @@
               permet de parcourir les collections et d’accéder aux métadonnées d’une
               position.
             </p>
-            <pre>{{ DTS_URL }}/navigation?id={id}</pre>
+            <pre>{{ DTS_URL }}/navigation?resource={id}</pre>
             <p>
               Une collection contient les métadonnées de la collection ainsi que le
               tableau de ses membres. Un membre de la collection peut être une collection
@@ -258,7 +258,7 @@
               <api-call-dropdown
                 method="GET"
                 description="La liste de tous les volumes disponibles"
-                :url="`${DTS_URL}/collections?id=ENCPOS`"
+                :url="`${DTS_URL}/collection?id=ENCPOS`"
               />
 
               <!--
@@ -266,13 +266,13 @@
               <api-call-dropdown
                 method="GET"
                 description="La liste des positions publiées en 1972, avec leurs métadonnées"
-                :url="`${DTS_URL}/collections?id=ENCPOS_1972`"
+                :url="`${DTS_URL}/collection?id=ENCPOS_1972`"
               />
 
               <api-call-dropdown
                 method="GET"
                 description="Les seules métadonnées de la position ENCPOS_1972_18"
-                :url="`${DTS_URL}/collections?id=ENCPOS_1972_18`"
+                :url="`${DTS_URL}/collection?id=ENCPOS_1972_18`"
               />
 
               -->
@@ -302,7 +302,7 @@
               >
               permet d’accéder au contenu intégral d’un document ou à ses parties.
             </p>
-            <pre>{{ DTS_URL }}/document?id={id}</pre>
+            <pre>{{ DTS_URL }}/document?resource={id}</pre>
             <p>
               La réponse est un fichier XML/TEI P5, conforme aux schémas maintenus par
               l’École des chartes. Voir la documentation.
@@ -316,14 +316,14 @@
               <api-call-dropdown
                 method="GET"
                 description="Réponse par défaut (XML/TEI) pour l’intégralité de la position ENCPOS_1972_18"
-                :url="`${DTS_URL}/document?id=ENCPOS_1972_18`"
+                :url="`${DTS_URL}/document?resource=ENCPOS_1972_18`"
                 format="xml"
               />
 
               <api-call-dropdown
                 method="GET"
                 description="Réponse formatée en HTML pour l’intégralité de la position ENCPOS_1972_18"
-                :url="`${DTS_URL}/document?id=ENCPOS_1972_18&format=html`"
+                :url="`${DTS_URL}/document?resource=ENCPOS_1972_18&mediaType=html`"
                 format="xml"
               />
             </div>
