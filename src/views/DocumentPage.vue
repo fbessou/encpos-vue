@@ -208,6 +208,7 @@ export default {
       metadata.date = dublincore["date"];
       metadata.page = extensions["dct:extend"];
       metadata.coverage = extensions["dct:coverage"];
+      metadata.rights = extensions["dct:rights"];
       metadata.title = listmetadata["extensions"][htmlnamespace + ":h1"];
 
       console.log("metadata.iiifManifestUrl", metadata.iiifManifestUrl);
@@ -586,12 +587,12 @@ export default {
   margin: 0;
 }
 
-#article h1.head.textpart,
+#article h1,
 #article .titlepage {
   font-family: "Barlow", sans-serif !important;
 }
 
-#article h1.head.textpart {
+#article h1 {
   padding: 0;
   font-size: 25px;
   font-weight: 500;
