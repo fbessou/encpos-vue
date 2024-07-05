@@ -134,10 +134,10 @@ export default {
           if (these["@id"].includes("PREV") || these["@id"].includes("NEXT")) {
             continue;
           }
-          title = these["dts:extensions"][htmlnamespace + ":h1"];
-          author = these["dts:extensions"][dcnamespace + ":creator"];
+          title = these["extensions"][htmlnamespace + ":h1"];
+          author = these["dublincore"]["creator"];
           try {
-            const page = these["dts:dublincore"]["dct:extend"].toString().split("-")[0];
+            const page = these["extensions"]["dct:extend"].toString().split("-")[0];
             metadataSupplement[page] = [these["@id"], author, title];
           } catch {
             metadataSupplement[these["@id"].split("_")[2]] = [these["@id"], author, title];
