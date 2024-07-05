@@ -142,7 +142,7 @@
             <p>
               Le point d’entrée
               <a
-                href="https://distributed-text-services.github.io/specifications/Collections-Endpoint.html"
+                href="https://distributed-text-services.github.io/specifications/versions/1-alpha/#collection-endpoint"
                 target="_blank"
                 ><code>Collections</code></a
               >
@@ -164,8 +164,8 @@
                 enrichissement)
               </li>
               <li><code>totalItems</code> : nombre de ses membres</li>
-              <li><code>dts:totalChildren</code> : TODO ?</li>
-              <li><code>dts:totalParents</code> : TODO ?</li>
+              <li><code>dts:totalChildren</code> : nombre de ses enfants</li>
+              <li><code>dts:totalParents</code> : nombre de ses parents</li>
               <li><code>member</code> : le tableau de ses membres</li>
             </ul>
             <p><code>dts:dublincore</code> liste des métadonnées Dublin Core :</p>
@@ -195,20 +195,20 @@
                 enrichissement)
               </li>
               <li>
-                <code>dts:passage</code> : lien vers le point d’entrée
+                <code>document</code> : lien vers le point d’entrée
                 <code>Documents</code> pour la ressource (accès au fichier source XML/TEI)
               </li>
               <li>
-                <code>dts:references</code> : lien vers le point d’entrée
+                <code>navigation</code> : lien vers le point d’entrée
                 <code>Navigation</code> pour la ressource, décrivant le modèle
                 documentaire (un document = une position dans notre cas).
               </li>
               <li>
-                <code>dts:download</code> : lien de téléchargement du fichier source
+                <code>download</code> : lien de téléchargement du fichier source
                 XML/TEI
               </li>
             </ul>
-            <p><code>dts:dublincore</code> liste des métadonnées Dublin Core :</p>
+            <p><code>dublincore</code> liste des métadonnées Dublin Core :</p>
             <ul>
               <li>
                 <code>dc:title</code> : titre (et son code langue ISO 639-2 dans une
@@ -233,24 +233,24 @@
               </li>
               <li><code>dc:format</code> : <code>application/tei+xml</code></li>
               <li>
-                <code>dc:coverage</code>: couverture temporelle de la position (au format
+                <code>dct:coverage</code>: couverture temporelle de la position (au format
                 <a href="https://www.loc.gov/standards/datetime/" target="_blank">EDTF</a
                 >, <em>Extended Date/Time Format</em>)
               </li>
               <li>
-                <code>dc:extent</code> : pagination de la version imprimée -&gt; basculer
+                <code>dct:extent</code> : pagination de la version imprimée -&gt; basculer
                 dans <code>dc:source</code> ?
               </li>
               <li>
-                <code>dc:publisher</code> : éditeur (label et URI de référence dans une
+                <code>dct:publisher</code> : éditeur (label et URI de référence dans une
                 liste)
               </li>
               <li>
-                <code>dc:isVersionOf</code> : liste des URI Sudoc, HAL, BENC et/ou ThENC@
+                <code>dct:isVersionOf</code> : liste des URI Sudoc, HAL, BENC et/ou ThENC@
                 de la thèse résumée par la position
               </li>
               <li>
-                <code>dc:source</code> : référence et URI de la source imprimée, et lien
+                <code>dct:source</code> : référence et URI de la source imprimée, et lien
                 aux ressources IIIF
               </li>
             </ul>
@@ -260,8 +260,6 @@
                 description="La liste de tous les volumes disponibles"
                 :url="`${DTS_URL}/collection?id=ENCPOS`"
               />
-
-              <!--
 
               <api-call-dropdown
                 method="GET"
@@ -275,8 +273,7 @@
                 :url="`${DTS_URL}/collection?id=ENCPOS_1972_18`"
               />
 
-              -->
-
+            <!--
               <api-call-dropdown
                 method="GET"
                 description="Exemple de réponse attendue pour la liste des positions publiées en 1972, avec leurs métadonnées"
@@ -288,6 +285,7 @@
                 description="Exemple de réponse attendue pour les métadonnées d’un document (en cours d’implémentation)"
                 url="https://raw.githubusercontent.com/Corentinfaye/testgit/master/DTS_reponse/ENCPOS_1972_18.json"
               />
+              -->
             </div>
           </section>
 
@@ -296,7 +294,7 @@
             <p>
               Le point d’entrée
               <a
-                href="https://distributed-text-services.github.io/specifications/Documents-Endpoint.html"
+                href="https://distributed-text-services.github.io/specifications/versions/1-alpha/#document-endpoint"
                 target="_blank"
                 ><code>Document</code></a
               >
@@ -308,7 +306,7 @@
               l’École des chartes. Voir la documentation.
             </p>
             <p>
-              Le paramètre de requête <code>format</code> permet de spécifier un autre
+              Le paramètre de requête <code>mediaType</code> permet de spécifier un autre
               format de réponse. À ce stade, seul le format <code>html</code> est
               implémenté.
             </p>
