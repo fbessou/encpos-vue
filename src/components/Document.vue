@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { defineAsyncComponent } from "vue/dist/vue.esm-bundler.js";
+import { defineAsyncComponent } from "vue";
 import { getDocumentFromApi } from "@/api/document";
 
 const VUE_APP_IIIF_URL = `${process.env.VUE_APP_IIIF_URL}`;
@@ -47,8 +47,10 @@ export default {
 
       // return what will make the async component
       return new Promise((resolve) => {
+        let doc = new DOMParser().parseFromString(tmpDom.innerHTML, "text/html");
+
         resolve({
-          template: tmpDom.innerHTML,
+          template: doc.getElementById("center").innerHTML,
         });
       });
     });
