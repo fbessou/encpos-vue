@@ -72,9 +72,9 @@
 </template>
 
 <script>
-import Document from "@/components/Document.vue";
-import DocumentMetadata from "../components/DocumentMetadata.vue";
-import { getMetadataENCPOSFromApi, getMetadataFromApi } from "@/api/document";
+import Document from '@/components/Document.vue'
+import DocumentMetadata from '../components/DocumentMetadata.vue'
+import { getMetadataENCPOSFromApi, getMetadataFromApi } from '@/api/document'
 
 import {
   computed,
@@ -84,66 +84,66 @@ import {
   reactive,
   provide,
   ref,
-  inject,
-} from "vue/dist/vue.esm-bundler.js";
-import { onBeforeRouteUpdate, useRoute } from "vue-router";
+  inject
+} from 'vue/dist/vue.esm-bundler.js'
+import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 
-import ListeTheseAnnee from "@/components/ListeTheseAnnee.vue";
-import useMirador from "@/composables/use-mirador";
+import ListeTheseAnnee from '@/components/ListeTheseAnnee.vue'
+import useMirador from '@/composables/use-mirador'
 
 const sources = [
-  { name: "data_bnf", ext: "data.bnf.fr" },
-  { name: "dbpedia", ext: "dbpedia.org" },
-  { name: "idref", ext: "idref.fr" },
-  { name: "catalogue_bnf", ext: "catalogue.bnf.fr" },
-  { name: "wikidata", ext: "wikidata" },
-  { name: "wikipedia", ext: "wikipedia" },
-  { name: "thenca", ext: "thenca" },
-  { name: "hal", ext: "hal" },
-  { name: "benc", ext: "koha" },
-  {},
-];
+  { name: 'data_bnf', ext: 'data.bnf.fr' },
+  { name: 'dbpedia', ext: 'dbpedia.org' },
+  { name: 'idref', ext: 'idref.fr' },
+  { name: 'catalogue_bnf', ext: 'catalogue.bnf.fr' },
+  { name: 'wikidata', ext: 'wikidata' },
+  { name: 'wikipedia', ext: 'wikipedia' },
+  { name: 'thenca', ext: 'thenca' },
+  { name: 'hal', ext: 'hal' },
+  { name: 'benc', ext: 'koha' },
+  {}
+]
 
-function findSource(id) {
-  let i = 0;
-  let source = null;
+function findSource (id) {
+  let i = 0
+  let source = null
 
   do {
-    source = id.includes(sources[i].ext) ? sources[i] : null;
-    i++;
-  } while (i < sources.length && source === null);
+    source = id.includes(sources[i].ext) ? sources[i] : null
+    i++
+  } while (i < sources.length && source === null)
 
   if (source) {
-    return source.name;
+    return source.name
   }
 
-  return null;
+  return null
 }
 
 export default {
-  name: "DocumentPage",
+  name: 'DocumentPage',
   components: {
     Document,
     DocumentMetadata,
-    ListeTheseAnnee,
+    ListeTheseAnnee
   },
-  async setup() {
-    const manifestIsAvailable = ref(false);
-    var yearsWithAdditionalPositions = [];
+  async setup () {
+    const manifestIsAvailable = ref(false)
+    let yearsWithAdditionalPositions = []
 
     // Mirador view sticky behavior
-    let miradorViewBoundingTop = ref(0);
+    const miradorViewBoundingTop = ref(0)
     const miradorViewCssStyle = computed(() => {
-      return { marginTop: miradorViewBoundingTop.value + "px" };
-    });
+      return { marginTop: miradorViewBoundingTop.value + 'px' }
+    })
 
     const updateMiradorTopPosition = function () {
-      const textView = document.getElementById("text-view");
+      const textView = document.getElementById('text-view')
       if (textView) {
-        const top = textView.getBoundingClientRect().top;
-        miradorViewBoundingTop.value = top < 0 ? -Math.floor(top) : 0;
+        const top = textView.getBoundingClientRect().top
+        miradorViewBoundingTop.value = top < 0 ? -Math.floor(top) : 0
       }
-    };
+    }
     const metadata = reactive({
       sudoc: null,
       benc: null,
@@ -159,150 +159,147 @@ export default {
       idref: null,
       catalogue_bnf: null,
       wikidata: null,
-      wikipedia: null,
-    });
+      wikipedia: null
+    })
 
-    const miradorInstance = useMirador("vue-mirador-container", null, 0);
+    const miradorInstance = useMirador('vue-mirador-container', null, 0)
     // provide an uninitialized instance of Mirador
-    provide("mirador", miradorInstance);
+    provide('mirador', miradorInstance)
 
-    const layout = inject("variable-layout");
+    const layout = inject('variable-layout')
 
     const getMetadata = async (docId) => {
-      const listmetadata = await getMetadataFromApi(docId);
+      const listmetadata = await getMetadataFromApi(docId)
 
-
-      var htmlnamespace = Object.keys(listmetadata["@context"]).find((k) =>
-        listmetadata["@context"][k].includes("html")
-      );
+      const htmlnamespace = Object.keys(listmetadata['@context']).find((k) =>
+        listmetadata['@context'][k].includes('html')
+      )
       console.log(htmlnamespace)
       console.log(listmetadata)
-      metadata.author = listmetadata["dublincore"]["creator"];
-      if (Array.isArray(listmetadata["extensions"]["download"])){
-        for (let meta of listmetadata["extensions"]["download"]){
-          if (meta.includes(".PDF")){
+      metadata.author = listmetadata.dublincore.creator
+      if (Array.isArray(listmetadata.extensions.download)) {
+        for (const meta of listmetadata.extensions.download) {
+          if (meta.includes('.PDF')) {
             metadata.downloadPDF = meta
           }
-          if (meta.includes("document")){
+          if (meta.includes('document')) {
             metadata.downloadXML = meta
           }
         }
       } else {
-        metadata.downloadXML = listmetadata["extensions"]["download"]
+        metadata.downloadXML = listmetadata.extensions.download
         metadata.downloadPDF = null
       }
-      metadata.download = listmetadata["download"];
+      metadata.download = listmetadata.download
 
-
-      const dublincore = listmetadata["dublincore"];
-      const extensions = listmetadata["extensions"];
-      console.log("---------");
-      console.log("dublincore", dublincore);
+      const dublincore = listmetadata.dublincore
+      const extensions = listmetadata.extensions
+      console.log('---------')
+      console.log('dublincore', dublincore)
       try {
-        metadata.iiifManifestUrl = extensions["dct:source"][0]["@id"];
-        layout.imageIsAvailable.value = true;
+        metadata.iiifManifestUrl = extensions['dct:source'][0]['@id']
+        layout.imageIsAvailable.value = true
       } catch {
-        metadata.iiifManifestUrl = "";
-        layout.imageIsAvailable.value = false;
+        metadata.iiifManifestUrl = ''
+        layout.imageIsAvailable.value = false
       }
-      metadata.date = dublincore["date"];
-      metadata.page = extensions["dct:extend"];
-      metadata.coverage = extensions["dct:coverage"];
-      metadata.rights = extensions["dct:rights"];
-      metadata.title = listmetadata["extensions"][htmlnamespace + ":h1"];
+      metadata.date = dublincore.date
+      metadata.page = extensions['dct:extend']
+      metadata.coverage = extensions['dct:coverage']
+      metadata.rights = extensions['dct:rights']
+      metadata.title = listmetadata.extensions[htmlnamespace + ':h1']
 
-      console.log("metadata.iiifManifestUrl", metadata.iiifManifestUrl);
-      console.log("metadata", metadata);
+      console.log('metadata.iiifManifestUrl', metadata.iiifManifestUrl)
+      console.log('metadata', metadata)
 
       if (dublincore) {
         // reset the sources
-        for (let s of sources) {
-          metadata[s.name] = null;
+        for (const s of sources) {
+          metadata[s.name] = null
         }
 
         // benc & sudoc & thenca
-        if (extensions["dct:isVersionOf"]) {
-          for (const member of extensions["dct:isVersionOf"]) {
-            if (member["@id"]) {
-              const source = findSource(member["@id"]);
+        if (extensions['dct:isVersionOf']) {
+          for (const member of extensions['dct:isVersionOf']) {
+            if (member['@id']) {
+              const source = findSource(member['@id'])
               if (source) {
-                metadata[source] = member["@id"];
-                console.log("source found:", source, member["@id"]);
+                metadata[source] = member['@id']
+                console.log('source found:', source, member['@id'])
               }
             }
           }
         }
 
         // creators
-        if (Array.isArray(extensions["dct:creator"])) {
-          for (let aut of extensions["dct:creator"]) {
-            if (aut["@id"]) {
+        if (Array.isArray(extensions['dct:creator'])) {
+          for (const aut of extensions['dct:creator']) {
+            if (aut['@id']) {
               // find the source name from its extension
-              const source = findSource(aut["@id"]);
+              const source = findSource(aut['@id'])
               if (source) {
-                metadata[source] = aut["@id"];
-                console.log("source found:", source, aut["@id"]);
+                metadata[source] = aut['@id']
+                console.log('source found:', source, aut['@id'])
               }
             }
           }
         }
       }
-    };
+    }
     const getAllPositionsYears = async () => {
-      const data = await getMetadataENCPOSFromApi();
-      let annees = [];
+      const data = await getMetadataENCPOSFromApi()
+      const annees = []
       let listProm = []
-      for (var member of data.member) {
-        let annee = member["@id"].replace("ENCPOS_", "");
-        annees.push(annee);
+      for (const member of data.member) {
+        const annee = member['@id'].replace('ENCPOS_', '')
+        annees.push(annee)
       }
-      annees.sort();
-      listProm = annees;
-      let yearsIdwithSupplementalIndicator = listProm.filter(a => a.includes('b'))
-      console.log("yearsIdwithSupplementalIndicator : ", yearsIdwithSupplementalIndicator)
-      yearsWithAdditionalPositions = yearsIdwithSupplementalIndicator.map(string => string.replace('b', ''));
-      console.log("yearsWithAdditionalPositions : ", yearsWithAdditionalPositions)
-    };
+      annees.sort()
+      listProm = annees
+      const yearsIdwithSupplementalIndicator = listProm.filter(a => a.includes('b'))
+      console.log('yearsIdwithSupplementalIndicator : ', yearsIdwithSupplementalIndicator)
+      yearsWithAdditionalPositions = yearsIdwithSupplementalIndicator.map(string => string.replace('b', ''))
+      console.log('yearsWithAdditionalPositions : ', yearsWithAdditionalPositions)
+    }
     const setMirador = function () {
       fetch(metadata.iiifManifestUrl, {
-        method: "HEAD",
+        method: 'HEAD'
       })
         .then((r) => {
-          manifestIsAvailable.value = r.ok;
-          miradorInstance.setManifestUrl(metadata.iiifManifestUrl);
-          miradorInstance.initialize();
+          manifestIsAvailable.value = r.ok
+          miradorInstance.setManifestUrl(metadata.iiifManifestUrl)
+          miradorInstance.initialize()
         })
         .catch(() => {
-          manifestIsAvailable.value = false;
-        });
-    };
+          manifestIsAvailable.value = false
+        })
+    }
 
     watch(
       () => metadata.iiifManifestUrl,
       async () => {
-        setMirador();
+        setMirador()
       }
-    );
+    )
 
     onBeforeRouteUpdate(async (to) => {
-      getMetadata(to.params.docId);
-    });
+      getMetadata(to.params.docId)
+    })
 
     onMounted(() => {
-      const appView = document.getElementById("app");
-      appView.addEventListener("scroll", updateMiradorTopPosition);
-      window.addEventListener('scroll', updateMiradorTopPosition);
-    });
+      const appView = document.getElementById('app')
+      appView.addEventListener('scroll', updateMiradorTopPosition)
+      window.addEventListener('scroll', updateMiradorTopPosition)
+    })
 
     onUnmounted(() => {
-      const appView = document.getElementById("app");
-      appView.removeEventListener("scroll", updateMiradorTopPosition);
-      window.removeEventListener('scroll', updateMiradorTopPosition);
-    });
+      const appView = document.getElementById('app')
+      appView.removeEventListener('scroll', updateMiradorTopPosition)
+      window.removeEventListener('scroll', updateMiradorTopPosition)
+    })
 
-
-    const route = useRoute();
-    await getMetadata(route.params.docId);
+    const route = useRoute()
+    await getMetadata(route.params.docId)
 
     await getAllPositionsYears()
 
@@ -319,9 +316,9 @@ export default {
       manifestIsAvailable,
       layout,
       yearsWithAdditionalPositions
-    };
-  },
-};
+    }
+  }
+}
 </script>
 
 <style>

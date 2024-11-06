@@ -5,60 +5,60 @@
 </template>
 
 <script>
-import { defineAsyncComponent } from "vue";
-import { getDocumentFromApi } from "@/api/document";
+import { defineAsyncComponent } from 'vue'
+import { getDocumentFromApi } from '@/api/document'
 
-const VUE_APP_IIIF_URL = `${process.env.VUE_APP_IIIF_URL}`;
+const VUE_APP_IIIF_URL = `${process.env.VUE_APP_IIIF_URL}`
 
 export default {
-  name: "Document",
+  name: 'Document',
 
-  props: ["id"],
+  props: ['id'],
 
-  async setup(props) {
+  async setup (props) {
     const customDocument = defineAsyncComponent(async () => {
       // fetch the initial template
-      const data = await getDocumentFromApi(props.id);
+      const data = await getDocumentFromApi(props.id)
       // build a temporary dom just to ease the navigation inside the document
-      let tmpDom = document.createElement("div");
-      tmpDom.innerHTML = data;
+      const tmpDom = document.createElement('div')
+      tmpDom.innerHTML = data
 
       // customize the template with some vue components and code
-      let frameNum = 1;
-      tmpDom.querySelectorAll("a.pb.facs").forEach((a) => {
-        const container = document.createElement("div");
+      let frameNum = 1
+      tmpDom.querySelectorAll('a.pb.facs').forEach((a) => {
+        const container = document.createElement('div')
         // TODO: gérer ce lowercase un peu gênant
-        const canvadId = `${VUE_APP_IIIF_URL}/${props.id.toLowerCase()}/canvas/f${frameNum}`;
-        container.innerHTML = `<page-break canvas-id="${canvadId}" canvas-num="${frameNum}" image="${a.href}"/>`;
-        frameNum += 1;
+        const canvadId = `${VUE_APP_IIIF_URL}/${props.id.toLowerCase()}/canvas/f${frameNum}`
+        container.innerHTML = `<page-break canvas-id="${canvadId}" canvas-num="${frameNum}" image="${a.href}"/>`
+        frameNum += 1
         // replace the link with a PageBreak component
-        a.parentNode.replaceChild(container.firstChild, a);
-      });
+        a.parentNode.replaceChild(container.firstChild, a)
+      })
 
-      const toc = tmpDom.querySelector("#aside");
+      const toc = tmpDom.querySelector('#aside')
 
-      const tocAreaDest = document.querySelector("#toc-area");
-      if (tocAreaDest.firstChild) tocAreaDest.removeChild(tocAreaDest.firstChild);
-      tocAreaDest.appendChild(toc);
+      const tocAreaDest = document.querySelector('#toc-area')
+      if (tocAreaDest.firstChild) tocAreaDest.removeChild(tocAreaDest.firstChild)
+      tocAreaDest.appendChild(toc)
 
-      const tocAsideDest = document.querySelector("#toc-area-aside");
-      if (tocAsideDest.firstChild) tocAsideDest.removeChild(tocAsideDest.firstChild);
-      tocAsideDest.appendChild(toc.cloneNode(true));
+      const tocAsideDest = document.querySelector('#toc-area-aside')
+      if (tocAsideDest.firstChild) tocAsideDest.removeChild(tocAsideDest.firstChild)
+      tocAsideDest.appendChild(toc.cloneNode(true))
 
       // return what will make the async component
       return new Promise((resolve) => {
-        let doc = new DOMParser().parseFromString(tmpDom.innerHTML, "text/html");
+        const doc = new DOMParser().parseFromString(tmpDom.innerHTML, 'text/html')
 
         resolve({
-          template: doc.getElementById("center").innerHTML,
-        });
-      });
-    });
+          template: doc.getElementById('center').innerHTML
+        })
+      })
+    })
     return {
-      customDocument,
-    };
-  },
-};
+      customDocument
+    }
+  }
+}
 </script>
 
 <style src="../assets/css/html.css" id="document-html-css">
