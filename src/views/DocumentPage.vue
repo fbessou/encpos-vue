@@ -276,6 +276,7 @@ export default {
           manifest.value = loadedManifest
         })
         .catch((error) => {
+          console.log('setMirador error : ', error)
           manifestIsAvailable.value = false
         })
     }
